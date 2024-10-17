@@ -1,0 +1,310 @@
+@import url("https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap");
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  --moon-radius: 200px;
+
+  background-color: #000;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  font-family: system-ui, sans-serif;
+}
+
+.wrapper {
+  --ani-speed: 40s;
+  --dots-clr: rgb(217, 119, 6);
+  --dots-radius: 130px;
+
+  position: relative;
+  width: var(--moon-radius);
+  height: var(--moon-radius);
+  border-radius: 50%;
+  animation: rotate-outer var(--ani-speed) linear infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*  animated smoke - an old classic */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    background-image: url("https://raw.githubusercontent.com/cbolson/icodethis-challenges/main/assets/images/smoke-ani.webp");
+    opacity: 0.3;
+    background-size: calc(var(--moon-radius) * 3);
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -10;
+  }
+
+  @keyframes rotate-outer {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* moon */
+.wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: -2;
+  animation: rotate-outer var(--ani-speed) linear infinite reverse; /* reverse animation to keep it visually static */
+  background-color: rgba(255 255 255 / 1);
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: cover;
+  opacity: 0.5;
+
+  box-shadow: inset 15px 10px 20px 5px rgba(0 0 0 / 0.2),
+    inset -12px -10px 20px 15px rgba(0 0 0 / 0.44),
+    0 0 10px 3px rgba(255 255 255 / 0.5);
+}
+.witch {
+  position: absolute;
+  inset: 50%;
+  width: 60px;
+  height: 60px;
+  margin: auto;
+  z-index: 3;
+  animation: rotate-outer var(--ani-speed) linear infinite reverse;
+}
+section {
+  --translate-1: -65px -10px;
+  --translate-5: 65px -10px;
+  --translate-2: -30px -35px;
+  --translate-4: 30px -35px;
+  --translate-6: -85px -50px;
+  --translate-3: 0px -60px;
+  --translate-7: -50px -65px;
+  --translate-8: 50px -65px;
+  --translate-9: -20px -85px;
+  --translate-10: 20px -85px;
+  --translate-11: 65px -95px;
+
+  --scale-1: 1;
+  --scale-5: 1;
+  --scale-2: 0.7;
+  --scale-4: 0.7;
+  --scale-6: 0.7;
+  --scale-3: 0.8;
+  --scale-7: 0.8;
+  --scale-8: 0.8;
+  --scale-9: 0.55;
+  --scale-10: 0.55;
+  --scale-11: 0.55;
+
+  transform-origin: 100px 100px;
+  position: absolute;
+  display: grid;
+  width: 200px;
+  height: 200px;
+  grid-template-areas: "stack";
+  place-content: center;
+
+  --dot-y: calc(var(--dots-radius) * 2);
+}
+/* Position the sections around the circle */
+section:nth-child(2) {
+  transform: rotate(45deg) translate(0, var(--dot-y));
+}
+section:nth-child(3) {
+  transform: rotate(90deg) translate(0, var(--dot-y));
+}
+section:nth-child(4) {
+  transform: rotate(135deg) translate(0, var(--dot-y));
+}
+section:nth-child(5) {
+  transform: rotate(180deg) translate(0, var(--dot-y));
+}
+section:nth-child(6) {
+  transform: rotate(225deg) translate(0, var(--dot-y));
+}
+section:nth-child(7) {
+  transform: rotate(270deg) translate(0, var(--dot-y));
+}
+section:nth-child(8) {
+  transform: rotate(315deg) translate(0, var(--dot-y));
+}
+section:nth-child(1) {
+  transform: rotate(0deg) translate(0, var(--dot-y));
+}
+
+/* :hover */
+section:hover {
+  --translate-1: -90px 30px;
+  --translate-2: -95px -15px;
+  --translate-3: 0px -100px;
+  --translate-4: 95px -15px;
+  --translate-5: 90px 30px;
+  --translate-6: -85px -50px;
+  --translate-7: -60px -75px;
+  --translate-8: 60px -75px;
+  --translate-9: -35px -95px;
+  --translate-10: 35px -95px;
+  --translate-11: 70px -105px;
+
+  --scale-1: 1;
+  --scale-5: 1;
+  --scale-2: 0.6;
+  --scale-4: 0.6;
+  --scale-3: 0.75;
+  --scale-7: 0.6;
+  --scale-8: 0.6;
+  --scale-9: 0.5;
+  --scale-10: 0.5;
+  --scale-11: 0.55;
+}
+
+section > * {
+  grid-area: stack;
+  width: 30px;
+  height: 30px;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  transition: all 300ms cubic-bezier(0.27, 0.16, 0.33, 0.95);
+}
+/* dots */
+section > div {
+  background-color: var(--dots-clr);
+  box-shadow: inset 3px 2px 6px 3px rgba(0 0 0 / 0.5);
+}
+section div:nth-of-type(1) {
+  translate: var(--translate-1);
+  scale: var(--scale-1);
+}
+section div:nth-of-type(2) {
+  translate: var(--translate-2);
+  scale: var(--scale-2);
+}
+section div:nth-of-type(3) {
+  translate: var(--translate-3);
+  scale: var(--scale-3);
+}
+section div:nth-of-type(4) {
+  translate: var(--translate-4);
+  scale: var(--scale-4);
+}
+section div:nth-of-type(5) {
+  translate: var(--translate-5);
+  scale: var(--scale-5);
+}
+section div:nth-of-type(6) {
+  translate: var(--translate-6);
+  scale: var(--scale-6);
+}
+section div:nth-of-type(7) {
+  translate: var(--translate-7);
+  scale: var(--scale-7);
+}
+section div:nth-of-type(8) {
+  translate: var(--translate-8);
+  scale: var(--scale-8);
+}
+section div:nth-of-type(9) {
+  translate: var(--translate-9);
+  scale: var(--scale-9);
+}
+section div:nth-of-type(10) {
+  translate: var(--translate-10);
+  scale: var(--scale-10);
+}
+section div:nth-of-type(11) {
+  translate: var(--translate-11);
+  scale: var(--scale-11);
+}
+
+section button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  animation: rotate-outer var(--ani-speed) linear infinite;
+  animation-direction: reverse;
+  rotate: var(--button-rotate, 0deg);
+}
+
+section:nth-of-type(2) button {
+  --button-rotate: -45deg;
+}
+section:nth-of-type(3) button {
+  --button-rotate: -90deg;
+}
+section:nth-of-type(4) button {
+  --button-rotate: -135deg;
+}
+section:nth-of-type(5) button {
+  --button-rotate: -180deg;
+}
+section:nth-of-type(6) button {
+  --button-rotate: 135deg;
+}
+section:nth-of-type(7) button {
+  --button-rotate: 90deg;
+}
+section:nth-of-type(8) button {
+  --button-rotate: 45deg;
+}
+
+section button svg {
+  width: 100%;
+  height: 100%;
+  scale: var(--button-scale, 1);
+  z-index: 1;
+  transition: scale 500ms cubic-bezier(0.27, 0.16, 0.33, 0.95);
+}
+
+.wrapper:has(:hover) section:not(:hover) > * {
+  opacity: 0.5;
+}
+section:hover {
+  --dots-clr: rgb(109, 40, 217);
+  --button-scale: 3.5;
+}
+
+.save {
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  max-width: 300px;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  background-color: #ff4500;
+  color: #111;
+  margin-block: 1.5rem;
+  cursor: pointer;
+  letter-spacing: 2px;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+.save:hover {
+  background-color: #111;
+  box-shadow: 0 0 1.5rem 0.25rem #ff440080;
+  color: #ff4500;
+  outline: none;
+}

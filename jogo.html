@@ -1,0 +1,354 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>catch-pumpkins</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 62.5%;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      background-color: #222;
+      overflow: hidden;
+    }
+
+    .wrapper {
+      --game-over: 0;
+      position: relative;
+      display: grid;
+    }
+
+    .wrapper .score {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 3rem;
+      padding: 1rem;
+      color: #ff5e00;
+      font-family: monospace;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .8;
+    }
+
+    .pumpkin--wrapper {
+      position: absolute;
+      inset: 0;
+      filter: blur(calc(10px * var(--game-over))) grayscale(var(--game-over));
+      transition: filter .5s ease;
+    }
+
+    @keyframes move {
+      to {
+        transform: translateY(calc(100vh));
+      }
+    }
+
+    .pumpkin::before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      top: 0px;
+      left: 0px;
+      box-shadow: var(--particles);
+    }
+
+    .btn {
+      --hover: 0;
+      --active: 0;
+      --show: 0;
+      --btn-width: 175px;
+      --btn-height: 50px;
+      --block-size: 10px;
+      --bg: hsl(22, 100%, max(50%, calc(var(--hover) * 60%)));
+      position: absolute;
+      left: 50%;
+      top: calc((100% - (60% * var(--show))) + var(--btn-height) + var(--block-size));
+      translate: -50% -50%;
+      width: var(--btn-width);
+      height: calc(var(--btn-height));
+      font-family: monospace;
+      text-transform: uppercase;
+      background-color: var(--bg);
+      color: color-mix(in lch, var(--bg), black 85%);
+      font-weight: 800;
+      letter-spacing: -1px;
+      border: none;
+      font-size: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 calc(5px * var(--active)) var(--bg)) drop-shadow(0 0 calc(15px * var(--active)) var(--bg));
+      transition: filter 0s ease, top .3s ease;
+    }
+
+    .save {
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      max-width: 300px;
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      border: none;
+      background-color: #ff4500;
+      color: #111;
+      margin-block: 1.5rem;
+      cursor: pointer;
+      letter-spacing: 2px;
+      border-radius: 10px;
+      position: absolute;
+      top: 0;
+      right: 10px;
+      z-index: 9999999999;
+    }
+
+    .save:hover {
+      background-color: #111;
+      box-shadow: 0 0 1.5rem 0.25rem #ff440080;
+      color: #ff4500;
+      outline: none;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      top: 0px;
+      left: 0px;
+      color: var(--bg);
+      box-shadow:
+        calc(-1 * var(--block-size)) calc(-1 * var(--block-size)) 0px var(--block-size),
+        calc(-1 * var(--block-size) - (var(--block-size)*1.5)) calc(-1 * var(--block-size) - (var(--block-size)*1.5)) 0 calc(var(--block-size)/2),
+        calc(var(--btn-width) + var(--block-size)) calc(-1 * var(--block-size)) 0px var(--block-size) currentColor,
+        calc(var(--btn-width) + var(--block-size) + (var(--block-size)*1.5)) calc((-1 * var(--block-size)) - (var(--block-size)*1.5)) 0px calc(var(--block-size)/2),
+        calc(var(--btn-width) + var(--block-size)) calc(var(--btn-height) + var(--block-size)) 0px var(--block-size),
+        calc(var(--btn-width) + (var(--block-size)*1.5) + var(--block-size)) calc(var(--btn-height) + (var(--block-size) * 1.5) + var(--block-size)) 0px calc(var(--block-size)/2),
+        calc(-1 * var(--block-size)) calc(var(--btn-height) + var(--block-size)) 0px var(--block-size),
+        calc(-1 * var(--block-size) - (var(--block-size)*1.5)) calc(var(--btn-height) + (var(--block-size)*1.5) + var(--block-size)) 0px calc(var(--block-size)/2);
+    }
+
+    .btn:hover {
+      --hover: 1;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      --active: 1;
+    }
+
+    .wrapper.game-over {
+      --game-over: 1;
+    }
+
+    .wrapper.game-over .pumpkin--wrapper {
+      pointer-events: none;
+    }
+
+    .wrapper.game-over .btn {
+      --show: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="save" href="./index.html">Voltar</a>
+  <div class="wrapper">
+    <div class="score" id="score">0000</div>
+    <div class="pumpkin--wrapper"></div>
+    <button class="btn restart-btn" onclick="restart_game()">restart</button>
+  </div>
+  <script>
+    class Particle {
+      constructor(x, y, size, hue) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.hue = hue;
+        this.el = '';
+        this.dx = (.5 - Math.random()) * .15
+        this.dy = (-1 - Math.random()) * .1
+        this.alpha = 1
+        this.saturation = rand(50, 100)
+        this.lightness = rand(40, 60)
+        this.draw()
+      }
+      draw() {
+        this.el = `${(this.size / 2) + this.x * (this.size)}px ${(this.size / 2) + this.y * (this.size)}px 0px ${this.size / 2}px hsla(${this.hue} ${this.saturation}% ${this.lightness}% / ${this.alpha})`
+      }
+      animate() {
+        this.y += this.dy
+        this.x += this.dx
+        this.size += .01
+        this.alpha -= .03
+        this.draw()
+      }
+    }
+    class Effect {
+      constructor(particle_size, particle_hue, parent) {
+        this.particle_size = particle_size
+        this.particle_hue = particle_hue
+        this.parent = parent
+        this.particles = []
+        this.particlesStr = ''
+        this.req = null
+        this.draw()
+        this.animate()
+      }
+      draw() {
+        const rect = this.parent.getBoundingClientRect()
+        for (let x = 0; x < rect.height / this.particle_size; x++) {
+          for (let y = 0; y < rect.width / this.particle_size; y++) {
+            this.particles.push(
+              new Particle(x, y, this.particle_size, this.particle_hue)
+            )
+          }
+        }
+        this.parent.style.setProperty("--particles", this.particles.map(p => p.el).join(","))
+      }
+      update() {
+        if (this.particles.length <= 0) {
+          cancelAnimationFrame(this.req)
+          this.parent.remove()
+        } else {
+          this.parent.style.setProperty("--particles", this.particles.map(p => p.el).join(","))
+          this.parent.textContent = ''
+        }
+      }
+      animate() {
+        this.req = requestAnimationFrame(() => this.animate())
+        this.particles.forEach((p, i) => {
+          if (p.alpha <= 0) this.particles.splice(i, 1)
+          else p.animate()
+        })
+        this.update()
+      }
+    }
+    class Pumpkin {
+      constructor(i, x, y, width, height, color, total, duration) {
+        Object.assign(this, {
+          i,
+          x,
+          y,
+          width,
+          height,
+          color,
+          total,
+          duration
+        })
+        this.init()
+        this.addEventListeners()
+        this.animate()
+      }
+      init() {
+        this.ELEMENT = document.createElement("div")
+        this.ELEMENT.className = "pumpkin"
+        this.ELEMENT.id = this.i
+        this.ELEMENT.textContent = '🎃'
+        this.ELEMENT.style = `
+                    position: absolute;
+                    top: ${this.y}px;
+                    left: ${this.x}px;
+                    width: ${this.width}px;
+                    height: ${this.height}px;
+                    font-size: ${this.width / 2}px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    user-select: none;
+                    transform: translateY(${-this.height}px);
+                    animation: move ${this.duration}ms linear infinite forwards;
+                    animation-delay: ${((this.duration / this.total) * ((this.total - this.i) + 1)) * 1}ms;
+                    `
+      }
+      addEventListeners() {
+        this.ELEMENT.onanimationiteration = () => {
+          this.ELEMENT.style.left = rand(0, (innerWidth - this.width)) + "px"
+          game_over()
+        }
+        this.ELEMENT.onclick = () => {
+          this.remove()
+          pumpkins.forEach((p, i) => {
+            if (this.i === i) {
+              pumpkins.splice(this.i, 1)
+              i--
+              pumpkins = [...pumpkins, new Pumpkin(
+                this.i,
+                rand(0, innerWidth - 100),
+                0,
+                100,
+                100,
+                "#E06015",
+                count,
+                3000
+              )]
+              pumpkins_wrapper.append(pumpkins[pumpkins.length - 1].ELEMENT)
+            }
+          })
+        }
+      }
+      remove() {
+        new Effect(35, 22, this.ELEMENT)
+        score += 10
+        document.querySelector("#score").textContent = score < 100 ? `00${score}` : `0${score}`;
+      }
+      animate() { }
+    }
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+    let pumpkins = [],
+      count = 4,
+      score = 0;
+    const pumpkins_wrapper = document.querySelector(".pumpkin--wrapper")
+    const generate_pumpkins = (count) => {
+      const particles = []
+      pumpkins_wrapper.innerHTML = ''
+      for (let i = 0; i < count; i++) {
+        pumpkins.push(new Pumpkin(
+          i,
+          rand(0, innerWidth - 100),
+          0,
+          100,
+          100,
+          "#E06015",
+          count,
+          3000
+        ))
+      }
+      pumpkins.forEach(p => pumpkins_wrapper.append(p.ELEMENT))
+    }
+    generate_pumpkins(count)
+
+    function game_over() {
+      pumpkins_wrapper.querySelectorAll("*").forEach(p => p.style.animationPlayState = "paused")
+      document.querySelector(".wrapper").classList.add("game-over")
+    }
+
+    function restart_game() {
+      generate_pumpkins(count)
+      score = 0
+      document.querySelector("#score").textContent = score < 100 ? `00${score}` : `0${score}`;
+      document.querySelector(".wrapper").classList.remove("game-over")
+    }
+  </script>
+</body>
+
+</html>
